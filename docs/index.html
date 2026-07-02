@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Документация EndlessNet</title>
+    <title>Справка EndlessNet</title>
     <meta
       name="description"
-      content="Справка EndlessNet: админка, подключение устройств, публикация статики и безопасность."
+      content="Короткая пользовательская справка EndlessNet: вход, установка клиента, подключение устройства и проверка статуса."
     />
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="../favicon.ico" sizes="any" />
@@ -64,118 +64,146 @@
 
     <main class="docs-page">
       <aside class="docs-nav" aria-label="Оглавление">
-        <a href="#overview">Обзор</a>
+        <a href="#start">Старт</a>
         <a href="#admin">Админка</a>
+        <a href="#install">Установка</a>
         <a href="#connect">Подключение</a>
-        <a href="#publish">Публикация</a>
+        <a href="#check">Проверка</a>
         <a href="#security">Безопасность</a>
       </aside>
 
       <article class="docs-content">
         <header class="docs-header">
-          <p class="eyebrow">Документация</p>
-          <h1>EndlessNet: запуск и эксплуатация</h1>
+          <p class="eyebrow">Справка</p>
+          <h1>Как подключиться к EndlessNet</h1>
           <p>
-            Эта страница описывает пользовательский порядок работы: вход в админку,
-            управление сетями, подключение устройств и публикацию публичной части.
+            Здесь только то, что нужно пользователю: войти в админку, выбрать сеть,
+            установить клиент, подключить устройство и проверить, что оно в сети.
           </p>
         </header>
 
-        <section id="overview" class="doc-section">
-          <h2>Обзор</h2>
+        <section id="start" class="doc-section">
+          <h2>Старт</h2>
           <p>
-            EndlessNet помогает командам держать частные сети и подключённые устройства
-            под управлением в одном месте. Публичная часть объясняет продукт, а админка
-            используется для ежедневной работы.
+            EndlessNet создаёт частную WireGuard-совместимую сеть для ваших устройств.
+            Ежедневная работа проходит в админке: там видны сети, устройства, статусы
+            и готовые команды подключения.
           </p>
           <div class="doc-grid">
             <div>
-              <strong>Публичная часть</strong>
-              <span>Лендинг, справка и ссылка на вход в рабочий раздел.</span>
+              <strong>Нужен доступ к админке</strong>
+              <span>Откройте админку и войдите через доступный провайдер авторизации.</span>
             </div>
             <div>
-              <strong>Админка</strong>
-              <span>Сети, устройства, статусы, подключение и выход из аккаунта.</span>
+              <strong>Нужна выбранная сеть</strong>
+              <span>Используйте существующую сеть или создайте новую в разделе “Сети”.</span>
             </div>
           </div>
         </section>
 
         <section id="admin" class="doc-section">
           <h2>Админка</h2>
-          <p>Если вход не выполнен, админка открывает страницу входа. После входа доступны:</p>
+          <p>После входа доступны четыре рабочих раздела:</p>
           <ul>
-            <li>обзор состояния сетей и устройств;</li>
-            <li>создание и просмотр сетей;</li>
-            <li>список подключённых устройств;</li>
-            <li>готовые действия для установки клиента и подключения машины.</li>
+            <li><strong>Обзор</strong> — состояние сетей и устройств.</li>
+            <li><strong>Сети</strong> — создание сети, CIDR и DNS.</li>
+            <li><strong>Устройства</strong> — список узлов выбранной сети.</li>
+            <li><strong>Доступ</strong> — команды установки и подключения клиента.</li>
           </ul>
+        </section>
+
+        <section id="install" class="doc-section">
+          <h2>Установка клиента</h2>
+          <p>
+            Для Debian и Ubuntu используйте APT-репозиторий UNNG. Для других систем
+            откройте раздел “Доступ” в админке и скопируйте команду для своей платформы.
+          </p>
+          <pre class="doc-code"><code>sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://apt.unng.ru/apt/unng.gpg | sudo tee /etc/apt/keyrings/unng.gpg &gt;/dev/null
+echo "deb [signed-by=/etc/apt/keyrings/unng.gpg] https://apt.unng.ru/apt stable main" | sudo tee /etc/apt/sources.list.d/unng.list
+sudo apt update
+sudo apt install -y endlessnet-client</code></pre>
+          <div class="doc-grid">
+            <div>
+              <strong>Windows</strong>
+              <span>Используйте <code>endlessnet-client.exe</code> и PowerShell-команды из раздела “Доступ”.</span>
+            </div>
+            <div>
+              <strong>Android и iOS</strong>
+              <span>Импортируйте сгенерированный <code>wg-endlessnet.conf</code> в официальное приложение WireGuard.</span>
+            </div>
+          </div>
         </section>
 
         <section id="connect" class="doc-section">
           <h2>Подключение устройства</h2>
-          <p>Подключение выполняется из админки для выбранной сети.</p>
+          <p>
+            Самый простой путь — скопировать готовую команду из раздела “Доступ”.
+            Если подключаете вручную через CLI, нужны адрес сервера, токен входа,
+            имя сети и имя устройства.
+          </p>
           <div class="doc-grid">
             <div>
               <strong>1. Выберите сеть</strong>
-              <span>Откройте раздел сетей или устройств и выберите нужное рабочее окружение.</span>
+              <span>Откройте “Сети” или “Устройства” и выберите рабочую сеть.</span>
             </div>
             <div>
-              <strong>2. Установите клиент</strong>
-              <span>Используйте готовую команду установки из раздела “Доступ”.</span>
+              <strong>2. Скопируйте команду</strong>
+              <span>В разделе “Доступ” команды уже подставлены под выбранную сеть.</span>
             </div>
             <div>
               <strong>3. Подключите устройство</strong>
-              <span>Выполните команду подключения и проверьте появление устройства в списке.</span>
+              <span>Выполните <code>login</code>, затем <code>up</code> на подключаемой машине.</span>
             </div>
             <div>
               <strong>4. Проверьте статус</strong>
-              <span>В админке видно имя устройства, адрес в сети, теги и время последней активности.</span>
+              <span>Устройство должно появиться в списке с адресом и временем активности.</span>
             </div>
           </div>
-          <p class="doc-note">
-            В разделе “Доступ” админка показывает команды для основных платформ и честно отделяет готовые пути установки от fallback-вариантов.
+          <pre class="doc-code"><code>endlessnet-client login --server &lt;server-url&gt; --token &lt;token&gt;
+endlessnet-client up --network &lt;network&gt; --hostname &lt;hostname&gt; --output ./wg-endlessnet.conf</code></pre>
+        </section>
+
+        <section id="check" class="doc-section">
+          <h2>Проверка и обслуживание</h2>
+          <p>
+            Используйте эти команды, когда нужно проверить состояние, обновить локальный
+            WireGuard-конфиг или отключить устройство.
           </p>
           <div class="doc-grid">
             <div>
-              <strong>Debian/Ubuntu</strong>
-              <span>Основной путь установки: UNNG APT repository на https://apt.unng.ru/apt.</span>
+              <strong>Показать статус</strong>
+              <span><code>endlessnet-client status --json</code></span>
             </div>
             <div>
-              <strong>Linux и macOS</strong>
-              <span>Для Linux без APT и для macOS используйте Pages installer install.sh с явным release, direct download или go install источником.</span>
+              <strong>Обновить конфиг</strong>
+              <span><code>endlessnet-client sync --output ./wg-endlessnet.conf</code></span>
             </div>
             <div>
-              <strong>Windows</strong>
-              <span>Используйте endlessnet-client.exe, затем выполните login, up и при необходимости сгенерируйте Windows service scripts.</span>
+              <strong>Отключить локально</strong>
+              <span><code>endlessnet-client down --output ./wg-endlessnet.conf</code></span>
             </div>
             <div>
-              <strong>Android/iOS</strong>
-              <span>Пока нативный мобильный пакет не опубликован, импортируйте сгенерированный wg-endlessnet.conf в официальное приложение WireGuard.</span>
+              <strong>Выйти и отозвать устройство</strong>
+              <span><code>endlessnet-client logout</code></span>
             </div>
           </div>
-        </section>
-
-        <section id="publish" class="doc-section">
-          <h2>GitHub Pages</h2>
-          <p>
-            Публичный сайт, справка и админка публикуются только как статические файлы
-            на GitHub Pages. Сервер приложений не должен раздавать эту статику.
-          </p>
         </section>
 
         <section id="security" class="doc-section">
           <h2>Безопасность</h2>
           <ul>
-            <li>Не публикуйте секреты доступа, приватные ключи и служебные параметры.</li>
-            <li>Не добавляйте на публичные страницы временные или локальные способы входа.</li>
-            <li>Все изменения публичной части должны проходить через сборку и публикацию Pages.</li>
+            <li>Не передавайте посторонним session token, join token и файл <code>wg-endlessnet.conf</code>.</li>
+            <li>Не копируйте один клиентский конфиг на несколько устройств.</li>
+            <li>Если устройство потеряно или передано другому пользователю, выполните <code>logout</code> или удалите его из админки.</li>
+            <li>На Unix-системах храните клиентский конфиг доступным только владельцу файла.</li>
           </ul>
         </section>
       </article>
     </main>
 
     <footer class="container site-footer">
-      <span>© EndlessNet. Справка и публичная часть.</span>
+      <span>© EndlessNet. Пользовательская справка.</span>
       <nav class="footer-links" aria-label="Ссылки в подвале">
         <a href="../">Главная</a>
         <a href="../admin/" data-admin-link>Админка</a>

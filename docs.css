@@ -100,13 +100,34 @@ body[data-page="docs"] .doc-section li {
   line-height: 1.75;
 }
 
+body[data-page="docs"] .doc-section code {
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: .94em;
+  overflow-wrap: anywhere;
+}
+
 body[data-page="docs"] .doc-section p {
   max-width: 780px;
   margin: 0;
 }
 
-body[data-page="docs"] .doc-section .doc-note {
-  margin-top: 22px;
+body[data-page="docs"] .doc-code {
+  max-width: 860px;
+  margin: 22px 0 0;
+  padding: 18px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(3, 9, 18, .68);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .055);
+}
+
+body[data-page="docs"] .doc-code code {
+  display: block;
+  min-width: max-content;
+  white-space: pre;
+  line-height: 1.65;
 }
 
 body[data-page="docs"] .doc-section ul {
