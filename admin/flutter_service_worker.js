@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
