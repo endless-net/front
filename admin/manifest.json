@@ -1,11 +1,11 @@
 {
-  "name": "Админка EndlessNet",
+  "name": "Консоль EndlessNet",
   "short_name": "EndlessNet",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f6f8f6",
   "theme_color": "#28735f",
-  "description": "Админка EndlessNet",
+  "description": "Консоль EndlessNet",
   "icons": [
     {
       "src": "icons/Icon-192.png",
