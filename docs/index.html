@@ -44,7 +44,7 @@
           </nav>
 
           <div class="header-actions">
-            <a class="button primary" href="../admin/" data-admin-link>Открыть админку</a>
+            <a class="button primary" href="../admin/" data-admin-link>Открыть консоль</a>
             <button class="menu-button" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-navigation">
               <span></span>
             </button>
@@ -57,7 +57,7 @@
           <a href="../#cases">Сценарии</a>
           <a href="../#security">Безопасность</a>
           <a href="./" aria-current="page">Документация</a>
-          <a href="../admin/" data-admin-link>Админка</a>
+          <a href="../admin/" data-admin-link>Консоль</a>
         </nav>
       </div>
     </header>
@@ -65,7 +65,7 @@
     <main class="docs-page">
       <aside class="docs-nav" aria-label="Оглавление">
         <a href="#start">Старт</a>
-        <a href="#admin">Админка</a>
+        <a href="#admin">Консоль</a>
         <a href="#install">Установка</a>
         <a href="#connect">Подключение</a>
         <a href="#check">Проверка</a>
@@ -77,7 +77,7 @@
           <p class="eyebrow">Справка</p>
           <h1>Как подключиться к EndlessNet</h1>
           <p>
-            Здесь только то, что нужно пользователю: войти в админку, выбрать сеть,
+            Здесь только то, что нужно пользователю: войти в консоль, выбрать сеть,
             установить клиент, подключить устройство и проверить, что оно в сети.
           </p>
         </header>
@@ -86,13 +86,13 @@
           <h2>Старт</h2>
           <p>
             EndlessNet создаёт частную WireGuard-совместимую сеть для ваших устройств.
-            Ежедневная работа проходит в админке: там видны сети, устройства, статусы
+            Ежедневная работа проходит в консоли: там видны сети, устройства, статусы
             и готовые команды подключения.
           </p>
           <div class="doc-grid">
             <div>
-              <strong>Нужен доступ к админке</strong>
-              <span>Откройте админку и войдите через доступный провайдер авторизации.</span>
+              <strong>Нужен доступ к консоли</strong>
+              <span>Откройте консоль и войдите через доступный провайдер авторизации.</span>
             </div>
             <div>
               <strong>Нужна выбранная сеть</strong>
@@ -102,7 +102,7 @@
         </section>
 
         <section id="admin" class="doc-section">
-          <h2>Админка</h2>
+          <h2>Консоль</h2>
           <p>После входа доступны четыре рабочих раздела:</p>
           <ul>
             <li><strong>Обзор</strong> — состояние сетей и устройств.</li>
@@ -116,7 +116,7 @@
           <h2>Установка клиента</h2>
           <p>
             Для Debian и Ubuntu используйте APT-репозиторий UNNG. Для других систем
-            откройте раздел “Доступ” в админке и скопируйте команду для своей платформы.
+            откройте раздел “Доступ” в консоли и скопируйте команду для своей платформы.
           </p>
           <pre class="doc-code"><code>sudo install -d -m 0755 /etc/apt/keyrings
 curl -fsSL https://apt.unng.ru/apt/unng.gpg | sudo tee /etc/apt/keyrings/unng.gpg &gt;/dev/null
@@ -195,7 +195,7 @@ endlessnet-client up --network &lt;network&gt; --hostname &lt;hostname&gt; --out
           <ul>
             <li>Не передавайте посторонним session token, join token и файл <code>wg-endlessnet.conf</code>.</li>
             <li>Не копируйте один клиентский конфиг на несколько устройств.</li>
-            <li>Если устройство потеряно или передано другому пользователю, выполните <code>logout</code> или удалите его из админки.</li>
+            <li>Если устройство потеряно или передано другому пользователю, выполните <code>logout</code> или удалите его из консоли.</li>
             <li>На Unix-системах храните клиентский конфиг доступным только владельцу файла.</li>
           </ul>
         </section>
@@ -206,7 +206,7 @@ endlessnet-client up --network &lt;network&gt; --hostname &lt;hostname&gt; --out
       <span>© EndlessNet. Пользовательская справка.</span>
       <nav class="footer-links" aria-label="Ссылки в подвале">
         <a href="../">Главная</a>
-        <a href="../admin/" data-admin-link>Админка</a>
+        <a href="../admin/" data-admin-link>Консоль</a>
       </nav>
     </footer>
   </body>
