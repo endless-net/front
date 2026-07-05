@@ -1,11 +1,11 @@
 {
-  "name": "EndlessNet Admin",
+  "name": "Админка EndlessNet",
   "short_name": "EndlessNet",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f6f8f6",
   "theme_color": "#28735f",
-  "description": "EndlessNet admin console",
+  "description": "Админка EndlessNet",
   "icons": [
     {
       "src": "icons/Icon-192.png",
