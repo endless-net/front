@@ -42053,62 +42053,62 @@ if(q!=null&&q.gIr())return q
 s=B.c.bF(a,"/")?a:"/"+a
 r=this.a
 return A.fu(B.c.bc(r).length===0?"http://localhost":r,0,null).S(s)},
-arh(){return this.cZ("GET","/api/v1/me",new A.ZV(),t.sE)},
-aqI(){return this.cZ("GET","/api/v1/accounts",new A.ZK(),t.aJ)},
-X5(a){return this.cZ("GET","/api/v1/networks"+(a==null||a.length===0?"":"?account_id="+A.b0(1,a,B.l,!0)),new A.ZQ(),t.me)},
+arh(){return this.cZ("GET","/auth/me",new A.ZV(),t.sE)},
+aqI(){return this.cZ("GET","/accounts",new A.ZK(),t.aJ)},
+X5(a){return this.cZ("GET","/networks"+(a==null||a.length===0?"":"?account_id="+A.b0(1,a,B.l,!0)),new A.ZQ(),t.me)},
 aqP(){return this.X5(null)},
 amS(a,b,c,d){var s=A.v(t.N,t.K)
 s.m(0,"name",d)
 s.m(0,"cidr",b)
 s.m(0,"dns",c)
 if(a.length!==0)s.m(0,"account_id",a)
-return this.dU("POST","/api/v1/networks",s,new A.Zy(),t.zK)},
+return this.dU("POST","/networks",s,new A.Zy(),t.zK)},
 aua(a,b,c,d){var s=t.N
-return this.dU("PATCH","/api/v1/accounts/"+A.b0(2,a,B.l,!1),A.af(["name",d,"billing_country",b,"currency",c],s,s),new A.ZZ(),t.VD)},
-aqN(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/machines",new A.ZO(),t.vp)},
-aug(a,b){return this.dU("PATCH","/api/v1/machines/"+A.b0(2,a,B.l,!1),b,new A.a_2(),t.rm)},
-anb(a){return this.cZ("DELETE","/api/v1/machines/"+A.b0(2,a,B.l,!1),new A.ZC(),t.H)},
-aqJ(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/apps",new A.ZL(),t.AT)},
-amO(a,b){return this.dU("POST","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/apps",b,new A.Zx(),t.f7)},
-auc(a,b){return this.dU("PATCH","/api/v1/apps/"+A.b0(2,a,B.l,!1),b,new A.a__(),t.f7)},
-an8(a){return this.cZ("DELETE","/api/v1/apps/"+A.b0(2,a,B.l,!1),new A.ZA(),t.H)},
-aqQ(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/services",new A.ZR(),t.Nt)},
-amV(a,b){return this.dU("POST","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/services",b,new A.Zz(),t.UV)},
-auk(a,b){return this.dU("PATCH","/api/v1/services/"+A.b0(2,a,B.l,!1),b,new A.a_4(),t.UV)},
-ane(a){return this.cZ("DELETE","/api/v1/services/"+A.b0(2,a,B.l,!1),new A.ZF(),t.H)},
-aqO(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/members",new A.ZP(),t.Vv)},
-aq7(a,b){return this.dU("POST","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/invites",b,new A.ZJ(),t.z2)},
-auh(a,b,c){return this.dU("PATCH","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/members/"+A.b0(2,b,B.l,!1),c,new A.a_3(),t.z2)},
-atg(a,b){return this.cZ("DELETE","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/members/"+A.b0(2,b,B.l,!1),new A.ZX(),t.H)},
-asD(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/policy",new A.ZW(),t.p2)},
-Zv(a,b){return this.dU("PUT","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/policy",b,new A.ZY(),t.p2)},
-anA(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/dns",new A.ZI(),t.gz)},
-aud(a,b){return this.dU("PATCH","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/dns",b,new A.a_0(),t.gz)},
+return this.dU("PATCH","/accounts/"+A.b0(2,a,B.l,!1),A.af(["name",d,"billing_country",b,"currency",c],s,s),new A.ZZ(),t.VD)},
+aqN(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/machines",new A.ZO(),t.vp)},
+aug(a,b){return this.dU("PATCH","/admin/machines/"+A.b0(2,a,B.l,!1),b,new A.a_2(),t.rm)},
+anb(a){return this.cZ("DELETE","/admin/machines/"+A.b0(2,a,B.l,!1),new A.ZC(),t.H)},
+aqJ(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/apps",new A.ZL(),t.AT)},
+amO(a,b){return this.dU("POST","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/apps",b,new A.Zx(),t.f7)},
+auc(a,b){return this.dU("PATCH","/admin/apps/"+A.b0(2,a,B.l,!1),b,new A.a__(),t.f7)},
+an8(a){return this.cZ("DELETE","/admin/apps/"+A.b0(2,a,B.l,!1),new A.ZA(),t.H)},
+aqQ(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/services",new A.ZR(),t.Nt)},
+amV(a,b){return this.dU("POST","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/services",b,new A.Zz(),t.UV)},
+auk(a,b){return this.dU("PATCH","/admin/services/"+A.b0(2,a,B.l,!1),b,new A.a_4(),t.UV)},
+ane(a){return this.cZ("DELETE","/admin/services/"+A.b0(2,a,B.l,!1),new A.ZF(),t.H)},
+aqO(a){return this.cZ("GET","/accounts/"+A.b0(2,a,B.l,!1)+"/members",new A.ZP(),t.Vv)},
+aq7(a,b){return this.dU("POST","/accounts/"+A.b0(2,a,B.l,!1)+"/invites",b,new A.ZJ(),t.z2)},
+auh(a,b,c){return this.dU("PATCH","/accounts/"+A.b0(2,a,B.l,!1)+"/members/"+A.b0(2,b,B.l,!1),c,new A.a_3(),t.z2)},
+atg(a,b){return this.cZ("DELETE","/accounts/"+A.b0(2,a,B.l,!1)+"/members/"+A.b0(2,b,B.l,!1),new A.ZX(),t.H)},
+asD(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/policy",new A.ZW(),t.p2)},
+Zv(a,b){return this.dU("PUT","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/policy",b,new A.ZY(),t.p2)},
+anA(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/dns",new A.ZI(),t.gz)},
+aud(a,b){return this.dU("PATCH","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/dns",b,new A.a_0(),t.gz)},
 aun(a,b,c){var s=b.length===0,r=s?"":"/"+A.b0(2,b,B.l,!1)
 s=s?"POST":"PATCH"
-return this.dU(s,"/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/dns/nameservers"+r,c,new A.a_6(),t.H)},
-anc(a,b){return this.cZ("DELETE","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/dns/nameservers/"+A.b0(2,b,B.l,!1),new A.ZD(),t.H)},
+return this.dU(s,"/admin/accounts/"+A.b0(2,a,B.l,!1)+"/dns/nameservers"+r,c,new A.a_6(),t.H)},
+anc(a,b){return this.cZ("DELETE","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/dns/nameservers/"+A.b0(2,b,B.l,!1),new A.ZD(),t.H)},
 auo(a,b,c){var s=b.length===0,r=s?"":"/"+A.b0(2,b,B.l,!1)
 s=s?"POST":"PATCH"
-return this.dU(s,"/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/dns/search-domains"+r,c,new A.a_7(),t.H)},
-and(a,b){return this.cZ("DELETE","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/dns/search-domains/"+A.b0(2,b,B.l,!1),new A.ZE(),t.H)},
-akO(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/audit",new A.Zs(),t.L6)},
-auf(a,b){return this.dU("POST","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/flow-logs/settings",b,new A.a_1(),t.H)},
-aqM(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/log-streams",new A.ZN(),t.b5)},
+return this.dU(s,"/admin/accounts/"+A.b0(2,a,B.l,!1)+"/dns/search-domains"+r,c,new A.a_7(),t.H)},
+and(a,b){return this.cZ("DELETE","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/dns/search-domains/"+A.b0(2,b,B.l,!1),new A.ZE(),t.H)},
+akO(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/audit",new A.Zs(),t.L6)},
+auf(a,b){return this.dU("POST","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/flow-logs/settings",b,new A.a_1(),t.H)},
+aqM(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/log-streams",new A.ZN(),t.b5)},
 aum(a,b,c){var s=b.length===0,r=s?"":"/"+A.b0(2,b,B.l,!1)
 s=s?"POST":"PATCH"
-return this.dU(s,"/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/log-streams"+r,c,new A.a_5(),t.H)},
-ana(a,b){return this.cZ("DELETE","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/log-streams/"+A.b0(2,b,B.l,!1),new A.ZB(),t.H)},
-aqL(){return this.cZ("GET","/api/v1/billing/plans",new A.ZM(),t.A4)},
-akY(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/billing/subscription",new A.Zu(),t.Q4)},
-akZ(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/billing/usage",new A.Zv(),t.bj)},
-akX(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/billing/invoices",new A.Zt(),t.sc)},
+return this.dU(s,"/admin/accounts/"+A.b0(2,a,B.l,!1)+"/log-streams"+r,c,new A.a_5(),t.H)},
+ana(a,b){return this.cZ("DELETE","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/log-streams/"+A.b0(2,b,B.l,!1),new A.ZB(),t.H)},
+aqL(){return this.cZ("GET","/billing/plans",new A.ZM(),t.A4)},
+akY(a){return this.cZ("GET","/accounts/"+A.b0(2,a,B.l,!1)+"/billing/subscription",new A.Zu(),t.Q4)},
+akZ(a){return this.cZ("GET","/accounts/"+A.b0(2,a,B.l,!1)+"/billing/usage",new A.Zv(),t.bj)},
+akX(a){return this.cZ("GET","/accounts/"+A.b0(2,a,B.l,!1)+"/billing/invoices",new A.Zt(),t.sc)},
 alk(a,b,c){var s=t.N
-return this.dU("POST","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/billing/change-plan",A.af(["plan_id",c,"billing_period",b],s,s),new A.Zw(),t.H)},
-aqR(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/trust-credentials",new A.ZS(),t.b5)},
-anf(a,b){return this.cZ("DELETE","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/trust-credentials/"+A.b0(2,b,B.l,!1),new A.ZG(),t.H)},
-aqS(a){return this.cZ("GET","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/webhooks",new A.ZT(),t.b5)},
-ang(a,b){return this.cZ("DELETE","/api/v1/accounts/"+A.b0(2,a,B.l,!1)+"/webhooks/"+A.b0(2,b,B.l,!1),new A.ZH(),t.H)},
+return this.dU("POST","/accounts/"+A.b0(2,a,B.l,!1)+"/billing/change-plan",A.af(["plan_id",c,"billing_period",b],s,s),new A.Zw(),t.H)},
+aqR(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/trust-credentials",new A.ZS(),t.b5)},
+anf(a,b){return this.cZ("DELETE","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/trust-credentials/"+A.b0(2,b,B.l,!1),new A.ZG(),t.H)},
+aqS(a){return this.cZ("GET","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/webhooks",new A.ZT(),t.b5)},
+ang(a,b){return this.cZ("DELETE","/admin/accounts/"+A.b0(2,a,B.l,!1)+"/webhooks/"+A.b0(2,b,B.l,!1),new A.ZH(),t.H)},
 ar0(){return this.agc("POST","/auth/logout",!1,new A.ZU(),t.H)},
 nQ(a,b,c,d,e,f){return this.agd(a,b,c,d,e,f,f)},
 agc(a,b,c,d,e){return this.nQ(a,b,c,null,d,e)},
@@ -44217,7 +44217,7 @@ e.m(0,"reusable",!1)
 e.m(0,"ephemeral",!1)
 e.m(0,"preauthorized",!0)
 s=7
-return A.x(i.dU("POST","/api/v1/accounts/"+f+"/join-tokens",e,A.m7(),t.P),$async$tg)
+return A.x(i.dU("POST","/admin/accounts/"+f+"/join-tokens",e,A.m7(),t.P),$async$tg)
 case 7:l=a0
 i=J.jx(l,"token")
 k=B.c.bc(i==null?"":J.V(i))
@@ -44371,9 +44371,9 @@ for(;;)switch(s){case 0:s=2
 return A.x(q.cW(new A.ak6(q,a)),$async$y0)
 case 2:return A.L(null,r)}})
 return A.M($async$y0,r)},
-ajS(a){return A.rz(this.w,this.x).dU("POST","/api/v1/accounts/"+A.b0(2,this.at,B.l,!1)+"/policy/validate",a,A.m7(),t.P)},
-afK(a){return A.rz(this.w,this.x).dU("POST","/api/v1/accounts/"+A.b0(2,this.at,B.l,!1)+"/policy/preview",a,A.m7(),t.P)},
-agy(){return A.rz(this.w,this.x).cZ("POST","/api/v1/accounts/"+A.b0(2,this.at,B.l,!1)+"/policy/tests/run",A.m7(),t.P)},
+ajS(a){return A.rz(this.w,this.x).dU("POST","/admin/accounts/"+A.b0(2,this.at,B.l,!1)+"/policy/validate",a,A.m7(),t.P)},
+afK(a){return A.rz(this.w,this.x).dU("POST","/admin/accounts/"+A.b0(2,this.at,B.l,!1)+"/policy/preview",a,A.m7(),t.P)},
+agy(){return A.rz(this.w,this.x).cZ("POST","/admin/accounts/"+A.b0(2,this.at,B.l,!1)+"/policy/tests/run",A.m7(),t.P)},
 ye(a){return this.agI(a)},
 agI(a){var s=0,r=A.N(t.H),q=this
 var $async$ye=A.O(function(b,c){if(b===1)return A.K(c,r)
@@ -44560,7 +44560,7 @@ A.ajP.prototype={
 $0(){return this.a.akX(this.b)},
 $S:408}
 A.ajQ.prototype={
-$0(){return this.a.cZ("GET","/api/v1/accounts/"+A.b0(2,this.b,B.l,!1)+"/license",A.m7(),t.P)},
+$0(){return this.a.cZ("GET","/accounts/"+A.b0(2,this.b,B.l,!1)+"/license",A.m7(),t.P)},
 $S:71}
 A.ajR.prototype={
 $0(){return this.a.aqP()},
@@ -44790,11 +44790,11 @@ m=q.a.at
 s=p.length===0?2:4
 break
 case 2:s=5
-return A.x(a.dU("POST","/api/v1/accounts/"+A.b0(2,m,B.l,!1)+"/trust-credentials",o,A.m7(),n),$async$$1)
+return A.x(a.dU("POST","/admin/accounts/"+A.b0(2,m,B.l,!1)+"/trust-credentials",o,A.m7(),n),$async$$1)
 case 5:s=3
 break
 case 4:s=6
-return A.x(a.dU("PATCH","/api/v1/accounts/"+A.b0(2,m,B.l,!1)+"/trust-credentials/"+A.b0(2,p,B.l,!1),o,A.m7(),n),$async$$1)
+return A.x(a.dU("PATCH","/admin/accounts/"+A.b0(2,m,B.l,!1)+"/trust-credentials/"+A.b0(2,p,B.l,!1),o,A.m7(),n),$async$$1)
 case 6:case 3:return A.L(null,r)}})
 return A.M($async$$1,r)},
 $S:12}
@@ -44812,11 +44812,11 @@ m=q.a.at
 s=p.length===0?2:4
 break
 case 2:s=5
-return A.x(a.dU("POST","/api/v1/accounts/"+A.b0(2,m,B.l,!1)+"/webhooks",o,A.m7(),n),$async$$1)
+return A.x(a.dU("POST","/admin/accounts/"+A.b0(2,m,B.l,!1)+"/webhooks",o,A.m7(),n),$async$$1)
 case 5:s=3
 break
 case 4:s=6
-return A.x(a.dU("PATCH","/api/v1/accounts/"+A.b0(2,m,B.l,!1)+"/webhooks/"+A.b0(2,p,B.l,!1),o,A.m7(),n),$async$$1)
+return A.x(a.dU("PATCH","/admin/accounts/"+A.b0(2,m,B.l,!1)+"/webhooks/"+A.b0(2,p,B.l,!1),o,A.m7(),n),$async$$1)
 case 6:case 3:return A.L(null,r)}})
 return A.M($async$$1,r)},
 $S:12}
@@ -44824,7 +44824,7 @@ A.ajH.prototype={
 $1(a){return a.ang(this.a.at,this.b)},
 $S:12}
 A.aki.prototype={
-$1(a){return a.cZ("POST","/api/v1/accounts/"+A.b0(2,this.a.at,B.l,!1)+"/webhooks/"+A.b0(2,this.b,B.l,!1)+"/test",A.m7(),t.P)},
+$1(a){return a.cZ("POST","/admin/accounts/"+A.b0(2,this.a.at,B.l,!1)+"/webhooks/"+A.b0(2,this.b,B.l,!1)+"/test",A.m7(),t.P)},
 $S:424}
 A.Pp.prototype={
 J(a){var s=null,r=B.dJ.nn(0.08),q=A.a_N(B.dJ.nn(0.34)),p=A.eX(8)
