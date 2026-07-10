@@ -29,7 +29,10 @@
   }
 
   const siteRoot = new URL(window.ENDLESSNET_SITE_ROOT || "./", window.location.href);
-  const adminURL = new URL(window.ENDLESSNET_ADMIN_URL || "admin/", siteRoot).href;
+  const adminURL = new URL(
+    window.ENDLESSNET_ADMIN_URL || "https://admin.endlessnet.ru/",
+    siteRoot,
+  ).href;
 
   document.querySelectorAll("[data-admin-link]").forEach((element) => {
     element.setAttribute("href", adminURL);
