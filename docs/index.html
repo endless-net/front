@@ -139,8 +139,8 @@ sudo apt install -y endlessnet-client</code></pre>
           <h2>Подключение устройства</h2>
           <p>
             Самый простой путь — скопировать готовую команду из раздела “Доступ”.
-            Если подключаете вручную через CLI, нужны адрес сервера, токен входа,
-            имя сети и имя устройства.
+            Если подключаете вручную через CLI, нужны адрес сервера, одноразовый
+            токен подключения, имя сети и имя устройства.
           </p>
           <div class="doc-grid">
             <div>
@@ -153,15 +153,15 @@ sudo apt install -y endlessnet-client</code></pre>
             </div>
             <div>
               <strong>3. Подключите устройство</strong>
-              <span>Выполните <code>login</code>, затем <code>up</code> на подключаемой машине.</span>
+              <span>Сохраните одноразовый токен в защищённый файл и выполните <code>up --join-token-file</code> на подключаемой машине.</span>
             </div>
             <div>
               <strong>4. Проверьте статус</strong>
               <span>Устройство должно появиться в списке с адресом и временем активности.</span>
             </div>
           </div>
-          <pre class="doc-code"><code>endlessnet-client login --server &lt;server-url&gt; --token &lt;token&gt;
-endlessnet-client up --network &lt;network&gt; --hostname &lt;hostname&gt; --output ./wg-endlessnet.conf</code></pre>
+          <pre class="doc-code"><code>endlessnet-client up --server &lt;server-url&gt; --join-token-file &lt;owner-only-token-file&gt; \
+  --network &lt;network&gt; --hostname &lt;hostname&gt; --output ./wg-endlessnet.conf</code></pre>
         </section>
 
         <section id="check" class="doc-section">
@@ -194,6 +194,7 @@ endlessnet-client up --network &lt;network&gt; --hostname &lt;hostname&gt; --out
           <h2>Безопасность</h2>
           <ul>
             <li>Не передавайте посторонним session token, join token и файл <code>wg-endlessnet.conf</code>.</li>
+            <li>Не передавайте токены в аргументах команд: используйте <code>--join-token-file</code> или stdin.</li>
             <li>Не копируйте один клиентский конфиг на несколько устройств.</li>
             <li>Если устройство потеряно или передано другому пользователю, выполните <code>logout</code> или удалите его из консоли.</li>
             <li>На Unix-системах храните клиентский конфиг доступным только владельцу файла.</li>

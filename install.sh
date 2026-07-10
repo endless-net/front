@@ -141,12 +141,12 @@ EndlessNet client installed:
   $installed_path
 
 Next:
-  $name login --server "${server_url:-<server-url>}" --token "${auth_token:-<token>}"
-  $name up --network "${network:-<network>}" --hostname "$hostname_value" --output ./wg-endlessnet.conf
+  Create a one-time join token in the HttpOnly-cookie admin console, then run:
+  $name up --server "${server_url:-<server-url>}" --join-token-file <owner-only-token-file> --network "${network:-<network>}" --hostname "$hostname_value" --output ./wg-endlessnet.conf
 EOF
 
 if [ "${ENDLESSNET_AUTO_LOGIN:-0}" = "1" ] && [ -n "$server_url" ] && [ -n "$auth_token" ]; then
-  "$installed_path" login --server "$server_url" --token "$auth_token"
+  printf '%s\n' "$auth_token" | "$installed_path" login --server "$server_url" --token-file -
 fi
 
 if [ "${ENDLESSNET_AUTO_UP:-0}" = "1" ] && [ -n "$network" ]; then
