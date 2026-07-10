@@ -1,0 +1,7 @@
+{
+  "source_repository": "https://github.com/unng-lab/endlessnet",
+  "contract_version": "1.0.0",
+  "files": {
+    "frontend-runtime-config.schema.json": "87b75fcf14f717ea33bc1d53224d11411ff66c3db5b19ea7138d1d819c7a682e"
+  }
+}

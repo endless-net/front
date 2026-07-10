@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.endlessnet.ru/frontend-runtime-config/v1/schema.json",
+  "title": "EndlessNet frontend runtime configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "api_base_url", "site_url", "admin_url"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "api_base_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "site_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "admin_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "admin_root": { "type": "string", "pattern": "^/.*/$", "default": "/" },
+    "downloads": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "apt_repository_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "windows_installer_url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "release_base_url": { "type": "string", "format": "uri", "pattern": "^https://" }
+      }
+    }
+  }
+}
