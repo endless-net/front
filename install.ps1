@@ -9,6 +9,7 @@ param(
   [string]$Mode = "workstation",
 
   [string]$MsiUrl = $env:ENDLESSNET_MSI_URL,
+  [string]$MsiSHA256Url = $env:ENDLESSNET_MSI_SHA256_URL,
   [string]$DownloadUrl = $env:ENDLESSNET_DOWNLOAD_URL,
   [string]$TrayDownloadUrl = $env:ENDLESSNET_TRAY_DOWNLOAD_URL,
   [string]$InstallDir = "$env:ProgramFiles\EndlessNet",
@@ -20,6 +21,13 @@ param(
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version 3.0
+
+if ($MsiUrl.Trim() -eq "" -and $DownloadUrl.Trim() -eq "") {
+  $MsiUrl = "https://endlessnet.ru/downloads/EndlessNet.Client.msi"
+}
+if ($MsiUrl.Trim() -ne "" -and $MsiSHA256Url.Trim() -eq "") {
+  $MsiSHA256Url = "$MsiUrl.sha256"
+}
 
 function Assert-Admin {
   $principal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
@@ -64,20 +72,32 @@ function Install-EndlessNetClient {
   param(
     [Parameter(Mandatory = $true)][string]$InstallDir,
     [string]$MsiUrl,
+    [string]$MsiSHA256Url,
     [string]$DownloadUrl
   )
   New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
   $client = Get-EndlessNetClient -InstallDir $InstallDir
-  if (Test-Path -LiteralPath $client) {
+  $installMSI = $MsiUrl.Trim() -ne ""
+  if (-not $installMSI -and (Test-Path -LiteralPath $client)) {
     return $client
   }
 
   $tmp = Join-Path $env:TEMP ("endlessnet-install-" + [Guid]::NewGuid().ToString("N"))
   New-Item -ItemType Directory -Force -Path $tmp | Out-Null
   try {
-    if ($MsiUrl.Trim() -ne "") {
+    if ($installMSI) {
       $msi = Join-Path $tmp "EndlessNet.Client.msi"
+      $checksum = Join-Path $tmp "EndlessNet.Client.msi.sha256"
       Invoke-WebRequest -Uri $MsiUrl -OutFile $msi -UseBasicParsing
+      Invoke-WebRequest -Uri $MsiSHA256Url -OutFile $checksum -UseBasicParsing
+      $expectedHash = ((Get-Content -LiteralPath $checksum -Raw).Trim() -split '\s+')[0].ToLowerInvariant()
+      if ($expectedHash -notmatch '^[0-9a-f]{64}$') {
+        throw "MSI checksum file does not contain a SHA-256 hash"
+      }
+      $actualHash = (Get-FileHash -LiteralPath $msi -Algorithm SHA256).Hash.ToLowerInvariant()
+      if ($actualHash -ne $expectedHash) {
+        throw "MSI checksum mismatch"
+      }
       $process = Start-Process -FilePath "msiexec.exe" -ArgumentList @("/i", $msi, "/qn", "/norestart") -Wait -PassThru
       if ($process.ExitCode -ne 0) {
         throw "MSI install failed with exit code $($process.ExitCode)"
@@ -174,7 +194,7 @@ $diagnostics = Join-Path $StateDir "Diagnostics"
 $artifacts = Join-Path $StateDir "Service"
 $ipcPipe = "\\.\pipe\endlessnet-service"
 $installTray = -not $NoTray -and $Mode -eq "workstation"
-$client = Install-EndlessNetClient -InstallDir $InstallDir -MsiUrl $MsiUrl -DownloadUrl $DownloadUrl
+$client = Install-EndlessNetClient -InstallDir $InstallDir -MsiUrl $MsiUrl -MsiSHA256Url $MsiSHA256Url -DownloadUrl $DownloadUrl
 $tray = Get-EndlessNetTray -InstallDir $InstallDir
 if ($installTray) {
   $packageInstall = $MsiUrl.Trim() -ne "" -or $DownloadUrl.Trim() -eq ""
