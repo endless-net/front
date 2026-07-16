@@ -1,0 +1,157 @@
+name: Publish Windows client download
+
+on:
+  repository_dispatch:
+    types: [windows-client-ui-published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-client-download
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERSION: ${{ github.event.client_payload.version }}
+      TAG: ${{ github.event.client_payload.tag }}
+      UI_COMMIT: ${{ github.event.client_payload.ui_commit }}
+      BACKEND_COMMIT: ${{ github.event.client_payload.backend_commit }}
+      RELEASE_REPOSITORY: ${{ github.event.client_payload.release_repository }}
+      MSI_ASSET: ${{ github.event.client_payload.msi_asset }}
+      MSI_SHA256: ${{ github.event.client_payload.msi_sha256 }}
+      CHECKSUM_ASSET: ${{ github.event.client_payload.checksum_asset }}
+      CHECKSUM_SHA256: ${{ github.event.client_payload.checksum_sha256 }}
+      PROVENANCE_ASSET: ${{ github.event.client_payload.provenance_asset }}
+      PROVENANCE_SHA256: ${{ github.event.client_payload.provenance_sha256 }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Validate immutable release payload
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::invalid version"; exit 1; }
+          [ "$TAG" = "v$VERSION" ] || { echo "::error::tag/version mismatch"; exit 1; }
+          [ "$RELEASE_REPOSITORY" = "unng-lab/endlessnet-client-ui" ] || { echo "::error::unexpected release repository"; exit 1; }
+          [[ "$UI_COMMIT" =~ ^[a-fA-F0-9]{40}$ && "$BACKEND_COMMIT" =~ ^[a-fA-F0-9]{40}$ ]] || { echo "::error::commit SHA is invalid"; exit 1; }
+          for digest in "$MSI_SHA256" "$CHECKSUM_SHA256" "$PROVENANCE_SHA256"; do
+            [[ "$digest" =~ ^[a-fA-F0-9]{64}$ ]] || { echo "::error::invalid artifact digest"; exit 1; }
+          done
+          [ "$MSI_ASSET" = "EndlessNet.Client.$VERSION.msi" ] || { echo "::error::unexpected MSI asset name"; exit 1; }
+          [ "$CHECKSUM_ASSET" = "$MSI_ASSET.sha256" ] || { echo "::error::unexpected checksum asset name"; exit 1; }
+          [ "$PROVENANCE_ASSET" = "release-provenance.json" ] || { echo "::error::unexpected provenance asset name"; exit 1; }
+
+      - name: Download private signed release
+        env:
+          GH_TOKEN: ${{ secrets.CLIENT_UI_RELEASE_TOKEN }}
+        run: |
+          set -euo pipefail
+          [ -n "$GH_TOKEN" ] || { echo "::error::CLIENT_UI_RELEASE_TOKEN is required"; exit 1; }
+          mkdir -p "$RUNNER_TEMP/client-release"
+          gh release download "$TAG" --repo "$RELEASE_REPOSITORY" \
+            --pattern "$MSI_ASSET" \
+            --pattern "$CHECKSUM_ASSET" \
+            --pattern "$PROVENANCE_ASSET" \
+            --dir "$RUNNER_TEMP/client-release"
+
+      - name: Verify release digests and provenance
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/client-release"
+          [ "$(sha256sum "$MSI_ASSET" | awk '{print $1}')" = "${MSI_SHA256,,}" ] || { echo "::error::MSI digest mismatch"; exit 1; }
+          [ "$(sha256sum "$CHECKSUM_ASSET" | awk '{print $1}')" = "${CHECKSUM_SHA256,,}" ] || { echo "::error::checksum digest mismatch"; exit 1; }
+          [ "$(sha256sum "$PROVENANCE_ASSET" | awk '{print $1}')" = "${PROVENANCE_SHA256,,}" ] || { echo "::error::provenance digest mismatch"; exit 1; }
+          grep -Eqi "^${MSI_SHA256}[[:space:]]+${MSI_ASSET}$" "$CHECKSUM_ASSET" || { echo "::error::checksum sidecar does not bind the MSI"; exit 1; }
+          jq -e \
+            --arg version "$VERSION" \
+            --arg ui_commit "${UI_COMMIT,,}" \
+            --arg backend_commit "${BACKEND_COMMIT,,}" \
+            --arg msi_sha "${MSI_SHA256,,}" \
+            '.version == $version and .ui.commit == $ui_commit and .backend.commit == $backend_commit and .artifacts.msi.signed_sha256 == $msi_sha' \
+            "$PROVENANCE_ASSET" >/dev/null
+
+      - name: Mirror immutable and stable download paths
+        id: mirror
+        run: |
+          set -euo pipefail
+          git pull --ff-only origin main
+          version_dir="downloads/v$VERSION"
+          mkdir -p "$version_dir"
+          versioned_msi="$version_dir/$MSI_ASSET"
+          versioned_checksum="$versioned_msi.sha256"
+          if [ -f "$versioned_msi" ]; then
+            existing="$(sha256sum "$versioned_msi" | awk '{print $1}')"
+            [ "$existing" = "${MSI_SHA256,,}" ] || { echo "::error::immutable MSI conflict at $versioned_msi"; exit 1; }
+          fi
+          cp "$RUNNER_TEMP/client-release/$MSI_ASSET" "$versioned_msi"
+          cp "$RUNNER_TEMP/client-release/$CHECKSUM_ASSET" "$versioned_checksum"
+          cp "$RUNNER_TEMP/client-release/$MSI_ASSET" downloads/EndlessNet.Client.msi
+          printf '%s  %s\n' "${MSI_SHA256,,}" "EndlessNet.Client.msi" > downloads/EndlessNet.Client.msi.sha256
+          git config user.name "endlessnet-release-bot"
+          git config user.email "endlessnet-release-bot@users.noreply.github.com"
+          git add -- "$versioned_msi" "$versioned_checksum" downloads/EndlessNet.Client.msi downloads/EndlessNet.Client.msi.sha256
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Publish EndlessNet Client v$VERSION"
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "public_revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for immutable Pages artifact
+        if: steps.mirror.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          url="https://endlessnet.ru/downloads/v$VERSION/$MSI_ASSET"
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent --show-error --head "$url" >/dev/null; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::immutable MSI did not reach GitHub Pages"
+          exit 1
+
+      - name: Dispatch immutable installer system test
+        if: steps.mirror.outputs.changed == 'true'
+        env:
+          SYSTEM_TESTS_DISPATCH_TOKEN: ${{ secrets.SYSTEM_TESTS_DISPATCH_TOKEN }}
+          PUBLIC_REVISION: ${{ steps.mirror.outputs.public_revision }}
+        run: |
+          set -euo pipefail
+          [ -n "$SYSTEM_TESTS_DISPATCH_TOKEN" ] || { echo "::error::SYSTEM_TESTS_DISPATCH_TOKEN is required"; exit 1; }
+          suite_revision="$(curl --fail --silent --show-error \
+            -H "Authorization: Bearer $SYSTEM_TESTS_DISPATCH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/unng-lab/endlessnet-system-tests/commits/main | jq -r .sha)"
+          [[ "$suite_revision" =~ ^[a-fA-F0-9]{40}$ ]] || { echo "::error::failed to resolve system-test revision"; exit 1; }
+          artifact_url="https://endlessnet.ru/downloads/v$VERSION/$MSI_ASSET"
+          checksum_url="$artifact_url.sha256"
+          provenance_url="https://github.com/$RELEASE_REPOSITORY/releases/download/$TAG/$PROVENANCE_ASSET"
+          manifest="$(jq -nc \
+            --arg backend_revision "${BACKEND_COMMIT,,}" \
+            --arg client_revision "${UI_COMMIT,,}" \
+            --arg version "$VERSION" \
+            --arg artifact_url "$artifact_url" \
+            --arg artifact_sha256 "${MSI_SHA256,,}" \
+            --arg checksum_url "$checksum_url" \
+            --arg provenance_url "$provenance_url" \
+            --arg provenance_sha256 "${PROVENANCE_SHA256,,}" \
+            --arg public_revision "$PUBLIC_REVISION" \
+            --arg suite_revision "$suite_revision" \
+            '{schema_version:2,backend:{repository:"unng-lab/endlessnet",revision:$backend_revision},client:{repository:"unng-lab/endlessnet-client-ui",revision:$client_revision,version:$version,target:"windows/amd64",artifact_url:$artifact_url,artifact_sha256:$artifact_sha256,checksum_url:$checksum_url,provenance_url:$provenance_url,provenance_sha256:$provenance_sha256},frontends:{public_repository:"unng-lab/endlessnetfront",public_revision:$public_revision},suite:{repository:"unng-lab/endlessnet-system-tests",revision:$suite_revision},scenario:"installers"}')"
+          jq -nc --arg manifest_json "$manifest" '{event_type:"windows-client-published",client_payload:{manifest_json:$manifest_json}}' > "$RUNNER_TEMP/system-test-dispatch.json"
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $SYSTEM_TESTS_DISPATCH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/unng-lab/endlessnet-system-tests/dispatches \
+            --data-binary "@$RUNNER_TEMP/system-test-dispatch.json"
