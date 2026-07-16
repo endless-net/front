@@ -1,1 +1,2 @@
 install.sh text eol=lf
+test/*.sh text eol=lf

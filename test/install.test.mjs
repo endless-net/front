@@ -72,6 +72,14 @@ test("installer help documents version and integrity controls", () => {
   assert.match(result.stdout, /--sha256 HASH/);
 });
 
+test("installer has no enrollment or up execution path", () => {
+  assert.doesNotMatch(installer, /service enroll/);
+  assert.doesNotMatch(installer, /enroll_installed_client/);
+  assert.doesNotMatch(installer, /client_up_args/);
+  assert.doesNotMatch(installer, /ENDLESSNET_AUTO_UP/);
+  assert.doesNotMatch(installer, /--join-token/);
+});
+
 test("direct downloads are installed only when their pinned SHA-256 matches", async () => {
   if (!canRunPOSIXShell) {
     return;
@@ -105,6 +113,14 @@ test("direct downloads are installed only when their pinned SHA-256 matches", as
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+test("normal installation starts the service without invoking the client", async () => {
+  if (!canRunPOSIXShell) {
+    return;
+  }
+  const result = spawnSync("sh", ["test/install-posix.test.sh"], { encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
 });
 
 test("APT installs include the managed keyring and exact requested version", async (t) => {

@@ -142,33 +142,34 @@ sudo apt install -y unng-archive-keyring endlessnet-client</code></pre>
         <section id="connect" class="doc-section">
           <h2>Подключение устройства</h2>
           <p>
-            Interactive подключение не требует join token: клиент создаёт enrollment request,
-            показывает ссылку одобрения и завершает подключение после approve в админке.
-            Unattended подключение остаётся отдельным режимом с заранее созданным join token.
+            Установщик только устанавливает клиент и запускает системную службу. Enrollment
+            начинается исключительно после явной команды <code>endlessnet up</code>: клиент
+            создаёт request, показывает ссылку одобрения и завершает подключение после approve
+            в админке.
           </p>
           <div class="doc-grid">
             <div>
-              <strong>1. Interactive</strong>
-              <span>Запустите установщик без token на подключаемой машине.</span>
+              <strong>1. Установите клиент</strong>
+              <span>Установщик не создаёт устройство и не запускает enrollment.</span>
             </div>
             <div>
-              <strong>2. Одобрите request</strong>
+              <strong>2. Запустите up</strong>
+              <span>Выполните <code>endlessnet up</code> на подключаемой машине.</span>
+            </div>
+            <div>
+              <strong>3. Одобрите request</strong>
               <span>Откройте approval URL, который вывел клиент, и подтвердите устройство.</span>
             </div>
             <div>
-              <strong>3. Complete enrollment</strong>
+              <strong>4. Complete enrollment</strong>
               <span>Клиент poll’ит request и после approve получает node credential и signed map.</span>
             </div>
-            <div>
-              <strong>4. Unattended</strong>
-              <span>Для серверов без оператора создайте join token в админке и скопируйте install command.</span>
-            </div>
           </div>
-          <pre class="doc-code"><code># Interactive
+          <pre class="doc-code"><code># Установка
 curl -fsSL https://endlessnet.ru/install.sh | sh
 
-# Unattended
-curl -fsSL https://endlessnet.ru/install.sh | sh -s -- --join-token '&lt;join-token&gt;'</code></pre>
+# Enrollment и подключение
+endlessnet up</code></pre>
         </section>
 
         <section id="check" class="doc-section">
