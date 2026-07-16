@@ -9,7 +9,7 @@ test("pinned contract checksums match the producer release", async () => {
   const lock = await readJSON("contracts/contracts.lock.json");
   assert.equal(lock.contract_version, "1.0.0");
   for (const [name, expected] of Object.entries(lock.files)) {
-    const content = await readFile(`contracts/${name}`);
+    const content = (await readFile(`contracts/${name}`, "utf8")).replace(/\r\n/g, "\n");
     const actual = createHash("sha256").update(content).digest("hex");
     assert.equal(actual, expected, `${name} checksum`);
   }

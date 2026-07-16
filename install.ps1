@@ -14,7 +14,6 @@ param(
   [string]$TrayDownloadUrl = $env:ENDLESSNET_TRAY_DOWNLOAD_URL,
   [string]$InstallDir = "$env:ProgramFiles\EndlessNet",
   [string]$StateDir = "$env:ProgramData\EndlessNet",
-  [string]$WireGuardWindows = "wireguard.exe",
   [switch]$NoTray,
   [switch]$NoStart
 )
@@ -156,32 +155,32 @@ function Install-EndlessNetTray {
   return $tray
 }
 
-function Resolve-WireGuardWindows {
-  param([Parameter(Mandatory = $true)][string]$Command)
-  $candidate = $Command.Trim()
-  if ($candidate -eq "") {
-    throw "WireGuard for Windows command is required"
-  }
-  if (Test-Path -LiteralPath $candidate) {
-    return (Resolve-Path -LiteralPath $candidate).Path
-  }
-  $fromPath = Get-Command $candidate -ErrorAction SilentlyContinue
-  if ($fromPath) {
-    return $fromPath.Source
-  }
-  $programFilesX86 = [Environment]::GetEnvironmentVariable("ProgramFiles(x86)")
-  $paths = @()
-  foreach ($root in @($env:ProgramFiles, $programFilesX86)) {
-    if ($root -and $root.Trim() -ne "") {
-      $paths += (Join-Path $root "WireGuard\wireguard.exe")
+function Install-VerifiedWintun {
+  param([Parameter(Mandatory = $true)][string]$ClientPath)
+  $target = Join-Path (Split-Path -Parent $ClientPath) "wintun.dll"
+  if (-not (Test-Path -LiteralPath $target)) {
+    $version = "0.14.1"
+    $expectedHash = "07c256185d6ee3652e09fa55c0b673e2624b565e02c4b9091c79ca7d2f24ef51"
+    $tmp = Join-Path $env:TEMP ("endlessnet-wintun-" + [Guid]::NewGuid().ToString("N"))
+    New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+    try {
+      $archive = Join-Path $tmp "wintun.zip"
+      Invoke-WebRequest -Uri "https://www.wintun.net/builds/wintun-$version.zip" -OutFile $archive -UseBasicParsing
+      $actualHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+      if ($actualHash -ne $expectedHash) {
+        throw "Official Wintun archive SHA-256 mismatch"
+      }
+      Expand-Archive -LiteralPath $archive -DestinationPath $tmp -Force
+      Copy-Item -LiteralPath (Join-Path $tmp "wintun\bin\amd64\wintun.dll") -Destination $target -Force
+    } finally {
+      Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
     }
   }
-  foreach ($path in $paths) {
-    if ($path -and (Test-Path -LiteralPath $path)) {
-      return (Resolve-Path -LiteralPath $path).Path
-    }
+  $signature = Get-AuthenticodeSignature -LiteralPath $target
+  if ($signature.Status -ne "Valid") {
+    throw "Official Wintun Authenticode verification failed: $($signature.Status)"
   }
-  throw "WireGuard for Windows wireguard.exe is required before consuming an EndlessNet enrollment token"
+  return $target
 }
 
 Assert-Admin
@@ -195,6 +194,7 @@ $artifacts = Join-Path $StateDir "Service"
 $ipcPipe = "\\.\pipe\endlessnet-service"
 $installTray = -not $NoTray -and $Mode -eq "workstation"
 $client = Install-EndlessNetClient -InstallDir $InstallDir -MsiUrl $MsiUrl -MsiSHA256Url $MsiSHA256Url -DownloadUrl $DownloadUrl
+$null = Install-VerifiedWintun -ClientPath $client
 $tray = Get-EndlessNetTray -InstallDir $InstallDir
 if ($installTray) {
   $packageInstall = $MsiUrl.Trim() -ne "" -or $DownloadUrl.Trim() -eq ""
@@ -210,9 +210,6 @@ $hasEnrollToken = $EnrollToken.Trim() -ne ""
 if ($hasEnrollToken -and -not $start) {
   throw "NoStart cannot be used with EnrollToken because service IPC enrollment requires the service to run"
 }
-if ($hasEnrollToken) {
-  $WireGuardWindows = Resolve-WireGuardWindows -Command $WireGuardWindows
-}
 $installStart = $start
 
 & $client service render-windows `
@@ -224,7 +221,6 @@ $installStart = $start
   --state $agentState `
   --diagnostics-dir $diagnostics `
   --ipc-pipe $ipcPipe `
-  --wireguard-windows $WireGuardWindows `
   --install-tray=$installTray `
   --start=$installStart
 if ($LASTEXITCODE -ne 0) {
