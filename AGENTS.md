@@ -20,3 +20,8 @@ Required checks:
 node --test
 node scripts/build.mjs
 ```
+
+The Windows release mirror uses `CLIENT_UI_RELEASE_TOKEN` with read-only
+Contents access only to `unng-lab/endlessnet-client-ui`, and
+`SYSTEM_TESTS_DISPATCH_TOKEN` with Contents write access only to
+`unng-lab/endlessnet-system-tests`.
