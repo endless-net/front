@@ -7,7 +7,7 @@ const readJSON = async (path) => JSON.parse(await readFile(path, "utf8"));
 
 test("pinned contract checksums match the producer release", async () => {
   const lock = await readJSON("contracts/contracts.lock.json");
-  assert.equal(lock.contract_version, "1.0.0");
+  assert.equal(lock.contract_version, "3.0.0");
   for (const [name, expected] of Object.entries(lock.files)) {
     const content = (await readFile(`contracts/${name}`, "utf8")).replace(/\r\n/g, "\n");
     const actual = createHash("sha256").update(content).digest("hex");
@@ -30,13 +30,14 @@ test("runtime configuration satisfies the pinned frontend schema", async () => {
     assert.ok(Object.hasOwn(config, required), `missing runtime configuration property: ${required}`);
   }
   assert.equal(config.schema_version, schema.properties.schema_version.const);
-  for (const key of ["api_base_url", "site_url", "admin_url"]) {
+  for (const key of ["control_plane_url", "site_url", "admin_url"]) {
     const value = new URL(config[key]);
     assert.equal(value.protocol, "https:", `${key} must use HTTPS`);
   }
 
   const generatedAdapter = await readFile("config.js", "utf8");
-  assert.match(generatedAdapter, new RegExp(`ENDLESSNET_API_BASE\\s*=\\s*${JSON.stringify(config.api_base_url)}`));
+  assert.match(generatedAdapter, new RegExp(`ENDLESSNET_CONTROL_PLANE_URL\\s*=\\s*${JSON.stringify(config.control_plane_url)}`));
+  assert.match(generatedAdapter, new RegExp(`ENDLESSNET_MANAGEMENT_API_BASE_PATH\\s*=\\s*${JSON.stringify(config.management_api_base_path)}`));
   assert.match(generatedAdapter, new RegExp(`ENDLESSNET_ADMIN_URL\\s*=\\s*${JSON.stringify(config.admin_url)}`));
   assert.match(generatedAdapter, new RegExp(`ENDLESSNET_SITE_ROOT\\s*=\\s*${JSON.stringify(config.site_url)}`));
 });

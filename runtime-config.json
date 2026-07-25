@@ -1,10 +1,8 @@
 {
-  "schema_version": 1,
-  "api_base_url": "https://api.endlessnet.ru",
+  "schema_version": 2,
+  "management_api_base_path": "/api/v1",
+  "control_plane_url": "https://api.endlessnet.ru",
   "site_url": "https://endlessnet.ru/",
   "admin_url": "https://admin.endlessnet.ru/",
-  "downloads": {
-    "apt_repository_url": "https://apt.unng.ru/apt",
-    "windows_installer_url": "https://endlessnet.ru/downloads/EndlessNet.Client.msi"
-  }
+  "admin_root": "/"
 }
