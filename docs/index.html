@@ -123,8 +123,8 @@
             на архитектурах amd64 и arm64.
           </p>
           <pre class="doc-code"><code>sudo install -d -m 0755 /usr/share/keyrings
-curl -fsSL https://apt.unng.ru/apt/unng.gpg | sudo tee /usr/share/keyrings/unng-archive-keyring.gpg &gt;/dev/null
-echo "deb [signed-by=/usr/share/keyrings/unng-archive-keyring.gpg] https://apt.unng.ru/apt stable main" | sudo tee /etc/apt/sources.list.d/unng.list
+curl -fsSL https://apt.endlessnet.ru/apt/unng.gpg | sudo tee /usr/share/keyrings/unng-archive-keyring.gpg &gt;/dev/null
+echo "deb [signed-by=/usr/share/keyrings/unng-archive-keyring.gpg] https://apt.endlessnet.ru/apt stable main" | sudo tee /etc/apt/sources.list.d/unng.list
 sudo apt update
 sudo apt install -y unng-archive-keyring endlessnet-client</code></pre>
           <div class="doc-grid">
