@@ -40,8 +40,12 @@ test("installer exposes exact APT versions and a managed keyring package", () =>
   assert.match(installer, /--version VERSION/);
   assert.match(installer, /ENDLESSNET_VERSION/);
   assert.match(installer, /endlessnet-client=\$client_version|\$name=\$client_version/);
+  assert.match(installer, /ENDLESSNET_APT_REPO:-https:\/\/apt\.endlessnet\.ru\/apt/);
+  assert.match(installer, /ENDLESSNET_APT_KEY_URL:-https:\/\/apt\.endlessnet\.ru\/apt\/unng\.gpg/);
   assert.match(installer, /unng-archive-keyring/);
   assert.match(installer, /debian:12\|debian:13\|ubuntu:22\.04\|ubuntu:24\.04\|ubuntu:26\.04/);
+  assert.match(installationDocs, /https:\/\/apt\.endlessnet\.ru\/apt\/unng\.gpg/);
+  assert.match(installationDocs, /https:\/\/apt\.endlessnet\.ru\/apt stable main/);
   assert.match(installationDocs, /\/usr\/share\/keyrings\/unng-archive-keyring\.gpg/);
   assert.match(installationDocs, /apt install -y unng-archive-keyring endlessnet-client/);
   assert.match(installationDocs, /Debian 12\/13.*Ubuntu 22\.04\/24\.04\/26\.04 LTS/s);
@@ -170,6 +174,7 @@ printf '%s\n' "$*" >> "$ENDLESSNET_TEST_APT_LOG"
       env: {
         ...process.env,
         PATH: `${commands}:${process.env.PATH}`,
+        ENDLESSNET_APT_REPO: "https://apt.example.test/repository",
         ENDLESSNET_APT_KEY_URL: "https://apt.example.test/unng.gpg",
         ENDLESSNET_APT_KEYRING: keyring,
         ENDLESSNET_APT_SOURCE_LIST: sourceList,
@@ -178,7 +183,9 @@ printf '%s\n' "$*" >> "$ENDLESSNET_TEST_APT_LOG"
     });
     assert.equal(result.status, 0, result.stderr);
     assert.match(await readFile(aptLog, "utf8"), /install -y wireguard-tools iproute2 unng-archive-keyring endlessnet-client=1\.2\.3/);
-    assert.ok((await readFile(sourceList, "utf8")).includes(`signed-by=${keyring}`));
+    const source = await readFile(sourceList, "utf8");
+    assert.ok(source.includes(`signed-by=${keyring}`));
+    assert.ok(source.includes("https://apt.example.test/repository"));
   } finally {
     await rm(root, { recursive: true, force: true });
   }
