@@ -333,6 +333,9 @@ EOF
 EndlessNet client installed:
   $installed_path
 
+To connect this device to EndlessNet, run:
+  endlessnet up
+
 EOF
 }
 

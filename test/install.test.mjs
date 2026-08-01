@@ -84,6 +84,10 @@ test("installer has no enrollment or up execution path", () => {
   assert.doesNotMatch(installer, /--join-token/);
 });
 
+test("installer tells the user how to start enrollment explicitly", () => {
+  assert.match(installer, /To connect this device to EndlessNet, run:\n  endlessnet up/);
+});
+
 test("direct downloads are installed only when their pinned SHA-256 matches", async () => {
   if (!canRunPOSIXShell) {
     return;
