@@ -1,13 +1,14 @@
-name: Deploy GitHub Pages
+name: Deploy published Front artifact to GitHub Pages
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Front CI and artifact publication
+    types:
+      - completed
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -17,38 +18,39 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  test-build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Verify frontend contracts
-        run: node --test
-
-      - name: Build Pages artifact
-        run: node scripts/build.mjs
-
-      - name: Upload tested Pages artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: public-pages
-          path: dist
-          if-no-files-found: error
-
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: test-build
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download tested Pages artifact
+      - name: Check out published revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+
+      - name: Download exact immutable site artifact
         uses: actions/download-artifact@v4
         with:
-          name: public-pages
-          path: dist
+          name: endlessnet-front-${{ github.event.workflow_run.head_sha }}
+          path: ${{ runner.temp }}/front-artifact
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Verify and extract immutable site artifact
+        env:
+          SOURCE_COMMIT: ${{ github.event.workflow_run.head_sha }}
+        run: >-
+          node scripts/site-artifact.mjs verify
+          --artifact-dir "${{ runner.temp }}/front-artifact"
+          --commit "$SOURCE_COMMIT"
+          --extract dist
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
