@@ -20,9 +20,10 @@ This repository owns only the EndlessNet public static site.
 - Generated Pages output is written to `dist` and must not be committed.
 - Do not inspect, build or test the EndlessNet Go backend for site-only
   changes.
-- Do not preserve obsolete site or installer behavior for backward
-  compatibility. The current product contract takes precedence and superseded
-  behavior must be removed rather than retained behind a fallback.
+- Do not retain legacy behavior, deprecated interfaces, or backward
+  compatibility. The current product contract takes precedence; superseded
+  behavior and interfaces must be removed rather than retained behind a
+  fallback.
 - `install.sh` only installs the client and starts its service. It must never
   create, resume, or complete enrollment; enrollment starts only after the user
   explicitly runs `endlessnet up`.
