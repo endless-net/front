@@ -1,20 +1,11 @@
-name: Deploy GitHub Pages
+name: Build public Pages artifact
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
 
 jobs:
   test-build:
@@ -35,29 +26,3 @@ jobs:
           name: public-pages
           path: dist
           if-no-files-found: error
-
-  deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: test-build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Download tested Pages artifact
-        uses: actions/download-artifact@v8.0.1
-        with:
-          name: public-pages
-          path: dist
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v6.0.0
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5.0.0
-        with:
-          path: dist
-
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v5.0.0
