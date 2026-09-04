@@ -39,3 +39,12 @@ The Windows release mirror uses `CLIENT_UI_RELEASE_TOKEN` with read-only
 Contents access only to `unng-lab/endlessnet-client-ui`, and
 `SYSTEM_TESTS_DISPATCH_TOKEN` with Contents write access only to
 `unng-lab/endlessnet-system-tests`.
+
+## Version increases
+
+- Never increase any version or generation number, including schema, configuration,
+  API, protocol, contract, manifest, migration, artifact, or rollout versions,
+  without the user's direct explicit permission for that exact increase.
+- A request to implement, refactor, fix, remove compatibility, or make a breaking
+  change does not authorize a version increase. Without explicit permission, keep
+  the current version number.
